@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Vatsal Monogram V</title>
+  <desc id="desc">Rounded square badge with a bold V monogram in cyan and blue.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#060b16" />
+      <stop offset="55%" stop-color="#102a5b" />
+      <stop offset="100%" stop-color="#0b1a39" />
+    </linearGradient>
+    <linearGradient id="vFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7dd3fc" />
+      <stop offset="50%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#67e8f9" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect x="4" y="4" width="56" height="56" rx="13" fill="url(#bg)" />
+  <circle cx="32" cy="30" r="22" fill="url(#glow)" />
+
+  <path d="M17 16h8l7 22 7-22h8L36 48h-8L17 16z" fill="url(#vFill)" />
+  <path d="M21 16h4l7 22 7-22h4L34 44h-4L21 16z" fill="#c4f1ff" fill-opacity="0.35" />
+
+  <rect x="4" y="4" width="56" height="56" rx="13" fill="none" stroke="#93c5fd" stroke-opacity="0.45" />
+</svg>
