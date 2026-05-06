@@ -71,11 +71,11 @@ export function ResumeContent() {
         <div className="text-[12px] text-ide-text-dim font-sans">
           📄 Resume — Vatsal Chandrani
         </div>
-        <a href="/resume.pdf" download="Vatsal_Chandrani_Resume.pdf" className="px-3 py-1 text-[11px] rounded border border-ide-border bg-ide-surface hover:bg-ide-hover hover:text-ide-text text-ide-text-dim transition-colors font-sans">
+        <a href="/Resume.pdf" download="Vatsal_Chandrani_Resume.pdf" className="px-3 py-1 text-[11px] rounded border border-ide-border bg-ide-surface hover:bg-ide-hover hover:text-ide-text text-ide-text-dim transition-colors font-sans">
           ⬇ Download PDF
         </a>
       </div>
-      <iframe src="/resume.pdf#toolbar=0&navpanes=0" title="Resume" className="flex-1 w-full bg-white"/>
+      <iframe src="/Resume.pdf#toolbar=0&navpanes=0" title="Resume" className="flex-1 w-full bg-white"/>
     </div>);
 }
 export function AboutContent() {

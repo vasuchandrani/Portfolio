@@ -39,7 +39,7 @@ export const extensions = [
             "Email notifications for outbids, wins, and payment reminders.",
         ],
         repo: "https://github.com/vasuchandrani/BidVault",
-        demo: "",
+        demo: "https://bidvault-1-jhvz.onrender.com",
         download: "",
         status: "Active",
     },

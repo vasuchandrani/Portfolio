@@ -304,7 +304,7 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
                     "📄 Opened Resume in editor.",
                     "",
                     "Use the ⬇ Download PDF button in the editor to save the file.",
-                    `Direct link: /resume.pdf`,
+                    `Direct link: /Resume.pdf`,
                 ],
             });
             push({ kind: "ok", text: "resume opened in editor — see preview above" });
