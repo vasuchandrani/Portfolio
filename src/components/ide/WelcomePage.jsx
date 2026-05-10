@@ -8,11 +8,11 @@ const tourSteps = [
     },
     {
         title: "📁 Workspace · Codebase",
-        body: "First icon in the left sidebar is file explorer. Open any file to explore me in real code files.",
+        body: "First icon in the left sidebar is file explorer. Open any code file to explore me ;).",
     },
     {
         title: "🧩 Arsenal · My Toolkit",
-        body: "As Projects & ideas are weapons for the engineer, The second icon opens my projects and future ideas as installable cards. Click any one for the full detail page.",
+        body: "Projects & ideas are weapons for an engineer, The second icon opens my weapons, all projects and future ideas as installable cards. Click any one for the full detail page.",
     },
     {
         title: "🌿 Chronicles · My Journey",
