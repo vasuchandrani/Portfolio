@@ -3,7 +3,7 @@ export const personalInfo = {
     role: "Creator & Problem Solver",
     degree: "B.Tech  Information Technology",
     university: "Dharmsinh Desai University",
-    cpi: 8.49,
+    cpi: 8.38,
     location: "Nadiad, Gujarat",
     focus: "Building awesome tech projects.",
     email: "vatsal.chandrani.11@gmail.com",

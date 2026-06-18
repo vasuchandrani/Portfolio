@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { extensions } from "./portfolioData";
+
 export function ExtensionsPanel({ onOpenDetail, activeId }) {
     const [query, setQuery] = useState("");
     const filtered = extensions.filter((e) => {
@@ -10,28 +11,53 @@ export function ExtensionsPanel({ onOpenDetail, activeId }) {
             e.tags.some((t) => t.toLowerCase().includes(q)));
     });
 
-    const projects = filtered.filter((e) => e.kind === "project");
-  
-    const ideas = filtered.filter((e) => e.kind === "idea");
+    const sections = {
+        project: {
+            title: "PROJECTS",
+            items: filtered.filter((e) => e.kind === "project"),
+        },
+        idea: {
+            title: "FUTURE IDEAS",
+            items: filtered.filter((e) => e.kind === "idea"),
+        },
+        freelance: {
+            title: "FREELANCE PROJECTS",
+            items: filtered.filter((e) => e.kind === "freelance"),
+        },
+        business: {
+            title: "BUSINESS IDEAS",
+            items: filtered.filter((e) => e.kind === "business"),
+        },
+    };
 
     return (<div className="h-full w-full bg-ide-surface border-r border-ide-border flex flex-col">
       <div className="px-4 py-3 text-[11px] tracking-wider text-ide-text-dim font-bold font-sans uppercase">
         Arsenal · My Toolkit
       </div>
       <div className="px-3 pb-2">
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects & ideas" className="w-full bg-ide-bg border border-ide-border rounded px-2 py-1.5 text-[12px] text-ide-text font-semibold placeholder:text-ide-text-dim placeholder:font-bold outline-none focus:border-ide-accent font-sans"/>
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search toolkit" className="w-full bg-ide-bg border border-ide-border rounded px-2 py-1.5 text-[12px] text-ide-text font-semibold placeholder:text-ide-text-dim placeholder:font-bold outline-none focus:border-ide-accent font-sans"/>
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <Section title={`PROJECTS — ${projects.length}`}>
-          {projects.map((e) => (<ExtCard key={e.id} ext={e} active={activeId === e.id} onClick={() => onOpenDetail(e.id)}/>))}
-        </Section>
-        <Section title={`FUTURE IDEAS — ${ideas.length}`}>
-          {ideas.map((e) => (<ExtCard key={e.id} ext={e} active={activeId === e.id} onClick={() => onOpenDetail(e.id)}/>))}
-        </Section>
+        {Object.values(sections).map((section) => (
+          <Section
+            key={section.title}
+            title={`${section.title} — ${section.items.length}`}
+          >
+            {section.items.map((e) => (
+              <ExtCard
+                key={e.id}
+                ext={e}
+                active={activeId === e.id}
+                onClick={() => onOpenDetail(e.id)}
+              />
+            ))}
+          </Section>
+        ))}
       </div>
     </div>);
 }
+
 function Section({ title, children }) {
     return (<div className="mb-2">
       <div className="px-4 py-1 text-[10px] tracking-wider text-ide-text-dim font-bold font-sans uppercase">
@@ -40,14 +66,39 @@ function Section({ title, children }) {
       <div>{children}</div>
     </div>);
 }
+
 function ExtCard({ ext, active, onClick, }) {
-    return (<button onClick={onClick} className={`w-full text-left px-3 py-2.5 flex gap-3 border-b border-ide-border/50 transition-colors ${active ? "bg-ide-hover" : "hover:bg-ide-hover"}`}>
-      <div className="size-10 shrink-0 rounded-md flex items-center justify-center font-bold text-[14px] font-mono" style={{
-            background: ext.kind === "project"
-                ? "linear-gradient(135deg, hsl(var(--ide-accent) / 0.25), hsl(var(--ide-accent) / 0.05))"
-                : "linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.05))",
-            color: ext.kind === "project" ? "hsl(var(--ide-accent))" : "#f59e0b",
-        }}>
+
+  const kindStyles = {
+        project: {
+            background: "linear-gradient(135deg, hsl(var(--ide-accent) / 0.25), hsl(var(--ide-accent) / 0.05))",
+            color: "hsl(var(--ide-accent))",
+        },
+
+        idea: {
+            background: "linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05))",
+            color: "#f59e0b",
+        },
+
+        business: {
+            background: "linear-gradient(135deg, rgba(34,197,94,0.25), rgba(34,197,94,0.05))",
+            color: "#22c55e",
+        },
+
+        freelance: {
+            background: "linear-gradient(135deg, rgba(168,85,247,0.25), rgba(168,85,247,0.05))",
+            color: "#a855f7",
+        },
+    };
+
+    const style = kindStyles[ext.kind] || kindStyles.project;
+
+    return (
+    <button onClick={onClick} className={`w-full text-left px-3 py-2.5 flex gap-3 border-b border-ide-border/50 transition-colors ${active ? "bg-ide-hover" : "hover:bg-ide-hover"}`}>
+      <div 
+        className="size-10 shrink-0 rounded-md flex items-center justify-center font-bold text-[14px] font-mono" 
+        style={style}>
+          
         {ext.name.charAt(0)}
       </div>
       <div className="min-w-0 flex-1">
@@ -62,21 +113,55 @@ function ExtCard({ ext, active, onClick, }) {
       </div>
     </button>);
 }
+
 export function ExtensionDetail({ id }) {
     const ext = extensions.find((e) => e.id === id);
     if (!ext) {
         return (<div className="p-8 text-ide-text-dim font-sans">Extension not found.</div>);
     }
-    const isIdea = ext.kind === "idea";
+    const kindStyles = {
+      project: {
+        badge: "bg-ide-accent/15 text-ide-accent",
+        iconBg:
+          "linear-gradient(135deg, hsl(var(--ide-accent) / 0.3), hsl(var(--ide-accent) / 0.05))",
+        iconColor: "hsl(var(--ide-accent))",
+        label: "Project",
+      },
+
+      idea: {
+        badge: "bg-amber-500/15 text-amber-500",
+        iconBg:
+          "linear-gradient(135deg, rgba(245,158,11,0.3), rgba(245,158,11,0.05))",
+        iconColor: "#f59e0b",
+        label: "Future Idea",
+      },
+
+      business: {
+        badge: "bg-green-500/15 text-green-500",
+        iconBg:
+          "linear-gradient(135deg, rgba(34,197,94,0.3), rgba(34,197,94,0.05))",
+        iconColor: "#22c55e",
+        label: "Business Idea",
+      },
+
+      freelance: {
+        badge: "bg-purple-500/15 text-purple-500",
+        iconBg:
+          "linear-gradient(135deg, rgba(168,85,247,0.3), rgba(168,85,247,0.05))",
+        iconColor: "#a855f7",
+        label: "Freelance Project",
+      },
+    };
+
+    const style = kindStyles[ext.kind] || kindStyles.project;
     return (<div className="h-full w-full overflow-auto bg-ide-bg text-ide-text font-sans">
       <div className="border-b border-ide-border bg-ide-surface px-8 py-6">
         <div className="flex items-start gap-5">
-          <div className="size-20 shrink-0 rounded-xl flex items-center justify-center font-bold text-[36px] font-mono" style={{
-            background: isIdea
-                ? "linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(245, 158, 11, 0.05))"
-                : "linear-gradient(135deg, hsl(var(--ide-accent) / 0.3), hsl(var(--ide-accent) / 0.05))",
-            color: isIdea ? "#f59e0b" : "hsl(var(--ide-accent))",
-        }}>
+          <div className="size-20 shrink-0 rounded-xl flex items-center justify-center font-bold text-[36px] font-mono" 
+            style={{
+              background: style.iconBg,
+              color: style.iconColor,
+            }}>
             {ext.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
@@ -85,11 +170,11 @@ export function ExtensionDetail({ id }) {
               <span className="text-[11px] px-2 py-0.5 rounded border border-ide-border text-ide-text-dim font-mono">
                 v{ext.version}
               </span>
-              <span className={`text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-semibold ${isIdea
-            ? "bg-amber-500/15 text-amber-500"
-            : "bg-ide-accent/15 text-ide-accent"}`}>
-                {isIdea ? "Future Idea" : "Project"}
-              </span>
+              <span
+              className={`text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-semibold ${style.badge}`}
+            >
+              {style.label}
+            </span>
             </div>
             <p className="text-[13px] text-ide-text font-semibold mt-1">{ext.tagline}</p>
             <p className="text-[11px] text-ide-text-dim font-semibold mt-1">
@@ -106,9 +191,13 @@ export function ExtensionDetail({ id }) {
               {ext.demo && (<a href={ext.demo} target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 rounded border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
                   ▶ {ext.kind === "project" ? "View Deployment" : "View Prototype"}
                 </a>)}
-              {isIdea && !ext.repo && (<span className="px-4 py-1.5 rounded border border-dashed border-amber-500/60 text-amber-400 text-[12px] font-bold">
-                  Coming Soon
-                </span>)}
+              {(ext.kind === "idea" || ext.kind === "business" || ext.kind === "freelance") &&
+                !ext.repo &&
+                !ext.demo && (
+                  <span className="px-4 py-1.5 rounded border border-dashed border-amber-500/60 text-amber-400 text-[12px] font-bold">
+                    Coming Soon
+                  </span>
+              )}
             </div>
           </div>
         </div>
@@ -145,6 +234,7 @@ export function ExtensionDetail({ id }) {
       </div>
     </div>);
 }
+
 function Section2({ title, children }) {
     return (<section className="mb-6">
       <h2 className="text-[11px] font-bold uppercase tracking-wider text-ide-text-dim mb-2 border-b border-ide-border pb-1">

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { personalInfo, socialLinks, achievements, skills } from "./portfolioData";
+import { FaGithub } from "react-icons/fa";
+import { HiOutlineRocketLaunch } from "react-icons/hi2";
 const TOUR_KEY = "vatsal-portfolio-tour-seen-v1";
 const tourSteps = [
     {
-        title: "Hello friend, welcome to my portfolio :)",
+        title: "Hello Curious Visitor 😄, welcome to my portfolio",
         body: "This isn't a regular site — it's a working code editor. Files, terminal, timeline, projects panel… all real. Let me give you a small tour.",
     },
     {
@@ -23,8 +25,12 @@ const tourSteps = [
         body: "Here in the terminal, you can run commands and execute codes. Type help to see all commands.",
     },
     {
-        title: "⌨️ Shortcuts",
-        body: "{ Ctrl + ` }  -  Toggle terminal | { Ctrl+Shift+E } -  Open Workspace | { Ctrl+Shift+G } - Open Chronicles | { Ctrl+Shift+X } - Open Arsenal",
+      title: "⌨️ Shortcuts",
+      body: `Ctrl + \`  → Toggle Terminal
+            Ctrl + Shift + E → Open Workspace
+            Ctrl + Shift + G → Open Chronicles
+            Ctrl + Shift + X → Open Arsenal
+            Have a great exploration!`,
     },
 ];
 function OnboardingTour({ onClose }) {
@@ -41,7 +47,19 @@ function OnboardingTour({ onClose }) {
             Step {step + 1} of {tourSteps.length}
           </div>
           <h3 className="text-[18px] font-bold text-ide-text mb-3">{s.title}</h3>
-          <p className="text-[13px] text-ide-text font-medium leading-relaxed">{s.body}</p>
+          {s.title === "⌨️ Shortcuts" ? (
+            <div className="space-y-2 text-[13px] text-ide-text font-medium">
+              <div><kbd>Ctrl + `</kbd> → Toggle Terminal</div>
+              <div><kbd>Ctrl + Shift + E</kbd> → Open Workspace</div>
+              <div><kbd>Ctrl + Shift + G</kbd> → Open Chronicles</div>
+              <div><kbd>Ctrl + Shift + X</kbd> → Open Arsenal</div>
+              <div><big>Have a great exploration! :)</big></div>
+            </div>
+          ) : (
+            <p className="text-[13px] text-ide-text font-medium leading-relaxed">
+              {s.body}
+            </p>
+          )}
         </div>
         <div className="px-5 py-4 border-t border-ide-border bg-ide-bg/40 flex items-center justify-between gap-3">
           <button onClick={onClose} className="text-[12px] font-semibold text-ide-text-dim hover:text-ide-text transition-colors">
@@ -125,11 +143,24 @@ export function WelcomePage({ onOpenFile }) {
             <button onClick={() => onOpenFile("resume")} className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
               📄 View Resume
             </button>
-            <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
-              ⌥ GitHub
+            <a
+              href={socialLinks.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors flex items-center gap-1"
+            >
+              <FaGithub />
+              GitHub
             </a>
-            <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
-              in LinkedIn
+
+            <a
+              href="https://codolio.com/profile/vatsalchandrani"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors flex items-center gap-1"
+            >
+              <HiOutlineRocketLaunch />
+              Codolio
             </a>
             <button onClick={() => setShowTour(true)} className="px-3 py-1.5 rounded-md border border-ide-accent/50 text-ide-accent text-[12px] font-bold hover:bg-ide-accent/10 transition-colors">
               ▶ Replay tour
