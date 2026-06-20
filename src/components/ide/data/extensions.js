@@ -224,7 +224,7 @@ export const extensions = [
                 "Premium and modern visual design tailored to the wedding industry"
             ],
             repo: "",
-            demo: "",
+            demo: "https://betterhalf-tales.onrender.com/",
             download: "",
             status: "In Development",
         },
