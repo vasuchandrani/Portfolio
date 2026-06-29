@@ -19,6 +19,7 @@ const helpRows = [
     { file: "Achievements.sql", cmd: "psql achievements.sql" },
     { file: "Resume", cmd: "show resume" },
 ];
+const STREAM_DELAY_MS = 65;
 function buildOutput(fileId) {
     switch (fileId) {
         case "about":
@@ -140,7 +141,41 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
     const [compiled, setCompiled] = useState({});
     const scrollRef = useRef(null);
     const inputRef = useRef(null);
+    const streamQueueRef = useRef([]);
+    const streamTimerRef = useRef(null);
+    const isStreamingRef = useRef(false);
+
+    function clearStreamQueue() {
+        streamQueueRef.current = [];
+        isStreamingRef.current = false;
+        if (streamTimerRef.current) {
+            clearTimeout(streamTimerRef.current);
+            streamTimerRef.current = null;
+        }
+    }
+
+    function streamLines(rows, delayMs = STREAM_DELAY_MS) {
+        if (!rows.length)
+            return;
+        streamQueueRef.current.push(...rows.map((row) => ({ row, delayMs })));
+        if (isStreamingRef.current)
+            return;
+        isStreamingRef.current = true;
+        const flushNext = () => {
+            const next = streamQueueRef.current.shift();
+            if (!next) {
+                isStreamingRef.current = false;
+                streamTimerRef.current = null;
+                return;
+            }
+            setLines((prev) => prev.concat({ ...next.row, animate: true }));
+            streamTimerRef.current = setTimeout(flushNext, next.delayMs);
+        };
+        flushNext();
+    }
+
     useEffect(() => {
+        clearStreamQueue();
         setLines([]);
         setInput("");
         setHistory([]);
@@ -163,13 +198,20 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         }, 180);
         return () => clearInterval(interval);
     }, [bootSequenceKey]);
+    useEffect(() => () => clearStreamQueue(), []);
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [lines]);
-    function push(l) {
-        setLines((prev) => prev.concat(Array.isArray(l) ? l : [l]));
+    function push(l, options = {}) {
+        const rows = Array.isArray(l) ? l : [l];
+        const shouldStream = options.stream ?? Array.isArray(l);
+        if (shouldStream) {
+            streamLines(rows, options.delayMs ?? STREAM_DELAY_MS);
+            return;
+        }
+        setLines((prev) => prev.concat(rows));
     }
     function pushHelp() {
         const rows = [
@@ -182,7 +224,7 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         rows.push({ kind: "info", text: "─────────────────────────────────────────────────────" });
         rows.push({ kind: "info", text: "  help     show this list" });
         rows.push({ kind: "info", text: "  clear    clear the terminal" });
-        push(rows);
+        push(rows, { stream: true, delayMs: 45 });
     }
     function runOutput(fileId, runMessage) {
         const block = buildOutput(fileId);
@@ -203,6 +245,7 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         const cmd = parts[0].toLowerCase();
         const rest = parts.slice(1).map((s) => s.toLowerCase());
         if (cmd === "clear" || cmd === "cls") {
+            clearStreamQueue();
             setLines([]);
             return;
         }
@@ -228,8 +271,10 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         if (cmd === "g++") {
             if (rest.includes("about.cpp")) {
                 setCompiled((c) => ({ ...c, about: true }));
-                push({ kind: "ok", text: "✓ Compiled about.cpp → ./about" });
-                push({ kind: "info", text: "Run `./about` to execute." });
+                push([
+                    { kind: "ok", text: "✓ Compiled about.cpp → ./about" },
+                    { kind: "info", text: "Run `./about` to execute." },
+                ]);
                 return;
             }
             push({ kind: "err", text: "g++: file not found. Try: g++ about.cpp -o about" });
@@ -238,8 +283,10 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         if (cmd === "gcc") {
             if (rest.includes("education.c")) {
                 setCompiled((c) => ({ ...c, education: true }));
-                push({ kind: "ok", text: "✓ Compiled education.c → ./education" });
-                push({ kind: "info", text: "Run `./education` to execute." });
+                push([
+                    { kind: "ok", text: "✓ Compiled education.c → ./education" },
+                    { kind: "info", text: "Run `./education` to execute." },
+                ]);
                 return;
             }
             push({ kind: "err", text: "gcc: file not found. Try: gcc education.c -o education" });
@@ -248,8 +295,10 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         if (cmd === "javac") {
             if (rest.includes("experience.java")) {
                 setCompiled((c) => ({ ...c, experience: true }));
-                push({ kind: "ok", text: "✓ Compiled Experience.java → Experience.class" });
-                push({ kind: "info", text: "Run `java experience` to execute." });
+                push([
+                    { kind: "ok", text: "✓ Compiled Experience.java → Experience.class" },
+                    { kind: "info", text: "Run `java experience` to execute." },
+                ]);
                 return;
             }
             push({ kind: "err", text: "javac: file not found. Try: javac experience.java" });
@@ -257,8 +306,10 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         }
         if (cmd === "./about") {
             if (!compiled.about) {
-                push({ kind: "err", text: "bash: ./about: No such file or directory" });
-                push({ kind: "info", text: "Hint: compile first with `g++ about.cpp -o about`, then run `./about`." });
+                push([
+                    { kind: "err", text: "bash: ./about: No such file or directory" },
+                    { kind: "info", text: "Hint: compile first with `g++ about.cpp -o about`, then run `./about`." },
+                ]);
                 return;
             }
             runOutput("about", "show the details in output tab");
@@ -266,8 +317,10 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         }
         if (cmd === "./education") {
             if (!compiled.education) {
-                push({ kind: "err", text: "bash: ./education: No such file or directory" });
-                push({ kind: "info", text: "Hint: compile first with `gcc education.c -o education`, then run `./education`." });
+                push([
+                    { kind: "err", text: "bash: ./education: No such file or directory" },
+                    { kind: "info", text: "Hint: compile first with `gcc education.c -o education`, then run `./education`." },
+                ]);
                 return;
             }
             runOutput("education", "show the details in output tab");
@@ -279,8 +332,10 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
         }
         if (cmd === "java" && rest[0] === "experience") {
             if (!compiled.experience) {
-                push({ kind: "err", text: "Error: Could not find or load main class experience" });
-                push({ kind: "info", text: "Hint: compile first with `javac experience.java`, then run `java experience`." });
+                push([
+                    { kind: "err", text: "Error: Could not find or load main class experience" },
+                    { kind: "info", text: "Hint: compile first with `javac experience.java`, then run `java experience`." },
+                ]);
                 return;
             }
             runOutput("experience", "show the details in output tab");
@@ -352,18 +407,18 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
               </div>);
             }
             if (l.kind === "ok")
-                return <div key={i} className="text-term-green font-semibold">{l.text || "\u00a0"}</div>;
+                return <div key={i} className={`text-term-green font-semibold ${l.animate ? "terminal-line-enter" : ""}`}>{l.text || "\u00a0"}</div>;
             if (l.kind === "err")
-                return <div key={i} className="text-[#ff6b6b] font-semibold">{l.text || "\u00a0"}</div>;
+                return <div key={i} className={`text-[#ff6b6b] font-semibold ${l.animate ? "terminal-line-enter" : ""}`}>{l.text || "\u00a0"}</div>;
             if (l.kind === "hint")
-                return <div key={i} className="text-term-amber font-semibold">{l.text || "\u00a0"}</div>;
+                return <div key={i} className={`text-term-amber font-semibold ${l.animate ? "terminal-line-enter" : ""}`}>{l.text || "\u00a0"}</div>;
             if (l.kind === "head")
-                return <div key={i} className="text-term-cyan font-bold mt-1">{l.text}</div>;
+                return <div key={i} className={`text-term-cyan font-bold mt-1 ${l.animate ? "terminal-line-enter" : ""}`}>{l.text}</div>;
             if (l.kind === "info")
-                return <div key={i} className="text-ide-text font-semibold whitespace-pre">{l.text || "\u00a0"}</div>;
+                return <div key={i} className={`text-ide-text font-semibold whitespace-pre ${l.animate ? "terminal-line-enter" : ""}`}>{l.text || "\u00a0"}</div>;
             if (l.kind === "boot") {
                 if (l.text.startsWith("vatsal@")) {
-                    return (<div key={i}>
+                    return (<div key={i} className={l.animate ? "terminal-line-enter" : ""}>
                   <span className="text-term-green font-semibold">vatsal@dev-machine</span>
                   <span className="text-ide-text-dim">:</span>
                   <span className="text-term-cyan font-semibold">~/portfolio</span>
@@ -372,12 +427,12 @@ export function TerminalPanel({ onPreviewProjects, onOutput, onOpenFile, bootSeq
                 </div>);
                 }
                 if (l.text.startsWith("✓"))
-                    return <div key={i} className="text-term-green font-semibold">{l.text}</div>;
+                    return <div key={i} className={`text-term-green font-semibold ${l.animate ? "terminal-line-enter" : ""}`}>{l.text}</div>;
                 if (l.text.startsWith("📊") || l.text.startsWith("🏗️") || l.text.startsWith("🎯"))
-                    return <div key={i} className="text-term-amber font-semibold">{l.text}</div>;
-                return <div key={i} className="text-ide-text font-semibold">{l.text || "\u00a0"}</div>;
+                    return <div key={i} className={`text-term-amber font-semibold ${l.animate ? "terminal-line-enter" : ""}`}>{l.text}</div>;
+                return <div key={i} className={`text-ide-text font-semibold ${l.animate ? "terminal-line-enter" : ""}`}>{l.text || "\u00a0"}</div>;
             }
-            return <div key={i} className="text-ide-text font-semibold">{l.text || "\u00a0"}</div>;
+            return <div key={i} className={`text-ide-text font-semibold ${l.animate ? "terminal-line-enter" : ""}`}>{l.text || "\u00a0"}</div>;
         })}
         <div className="flex items-center gap-1">
           <Prompt />
