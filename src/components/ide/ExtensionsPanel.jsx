@@ -16,6 +16,10 @@ export function ExtensionsPanel({ onOpenDetail, activeId }) {
             title: "PROJECTS",
             items: filtered.filter((e) => e.kind === "project"),
         },
+        chrome: {
+            title: "CHROME EXTENSIONS",
+            items: filtered.filter((e) => e.kind === "chrome"),
+        },
         idea: {
             title: "FUTURE IDEAS",
             items: filtered.filter((e) => e.kind === "idea"),
@@ -75,6 +79,11 @@ function ExtCard({ ext, active, onClick, }) {
             color: "hsl(var(--ide-accent))",
         },
 
+        chrome: {
+            background: "linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.05))",
+            color: "#3b82f6",
+        },
+
         idea: {
             background: "linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05))",
             color: "#f59e0b",
@@ -126,6 +135,14 @@ export function ExtensionDetail({ id }) {
           "linear-gradient(135deg, hsl(var(--ide-accent) / 0.3), hsl(var(--ide-accent) / 0.05))",
         iconColor: "hsl(var(--ide-accent))",
         label: "Project",
+      },
+
+      chrome: {
+          badge: "bg-blue-500/15 text-blue-500",
+          iconBg:
+              "linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.05))",
+          iconColor: "#3b82f6",
+          label: "Chrome Extension",
       },
 
       idea: {

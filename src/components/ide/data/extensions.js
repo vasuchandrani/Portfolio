@@ -202,6 +202,54 @@ export const extensions = [
             status: "Planning",
         },
 
+        // Chrome Extensions
+        {
+            id: "ext-ai-meet-summarizer",
+            name: "AI Powered Meeting Summarizer",
+            publisher: "vatsalchandrani",
+            version: "1.0.0",
+            kind: "chrome",
+            tagline: "Real-time Google Meet transcription and AI-powered note-taking.",
+            description: "AI Powered Meeting Summarizer is a Chrome extension designed to capture live closed captions from Google Meet calls and generate structured executive summaries, Q&A logs, and actionable checklist tasks using Gemini, OpenAI, or Hugging Face. Running entirely locally in the browser, it requires no calendar bot invites or microphone permissions, guaranteeing absolute privacy and a seamless meeting workflow.",
+            tags: [
+                "Secure, browser-only transcription and notes",
+                "Real-time meeting notes without intrusive join-bots"
+            ],
+            features: [
+                "Local DOM captions observation with no microphone permission needed",
+                "Dynamic turn-stabilization that merges speaker segments into single paragraphs",
+                "AI report suite including Executive Summary, Q&A tracking, and checklist tasks",
+                "Markdown report exporter including full meeting transcripts"
+            ],
+            repo: "https://github.com/vasuchandrani/Chrome-Extensions/tree/main/AI%20Meet%20Summarizer",
+            demo: "",
+            download: "https://github.com/vasuchandrani/Chrome-Extensions/tree/main/AI%20Meet%20Summarizer",
+            status : "Active"
+        },
+        {
+            id: "ext-ai-article-summarizer",
+            name: "AI Powered Article Summarizer",
+            publisher: "vatsalchandrani",
+            version: "1.0.0",
+            kind: "chrome",
+            tagline: "Grasp the core insights of any online article or webpage in seconds.",
+            description: "AI Powered Article Summarizer is a Chrome extension that extracts page contents and utilizes state-of-the-art AI models to generate quick summaries. Readers can switch between brief summaries, detailed analyses, or key bullet points directly in their browser sidebar, optimizing reading speed and research workflow without manual copy-pasting.",
+            tags: [
+                "Smart reading companion for students and professionals",
+                "Multi-provider AI support with Gemini, OpenAI, and Hugging Face"
+            ],
+            features: [
+                "One-click page text extraction of active article body paragraphs",
+                "Three summary styles: Brief (2-3 sentences), Detailed overview, and Bullet points",
+                "Options settings page to securely select model parameters and store API keys",
+                "One-click copy to clipboard integration for generated summaries"
+            ],
+            repo: "https://github.com/vasuchandrani/Chrome-Extensions/tree/main/AI%20Article%20Summarizer",
+            demo: "",
+            download: "https://github.com/vasuchandrani/Chrome-Extensions/tree/main/AI%20Meet%20Summarizer",
+            status : "Active"
+        },
+
         // Freelance Services
         {
             id: "ext-betterhalftales",
