@@ -108,9 +108,9 @@ export function WelcomePage({ onOpenFile }) {
     ];
     const stats = [
         { label: "CPI", value: personalInfo.cpi.toString() },
-        { label: "Problems", value: "900+" },
-        { label: "CF Rating", value: "1183" },
-        { label: "LC Rating", value: "1630" },
+        { label: "Problems", value: "950+" },
+        { label: "CF Rating", value: "1271" },
+        { label: "LC Rating", value: "1651" },
     ];
     const shortcuts = [
         { keys: "Ctrl + `", label: "Toggle terminal" },

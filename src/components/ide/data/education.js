@@ -2,7 +2,7 @@ export const education = [
     {
         institution: "Dharmsinh Desai University",
         degree: "B.Tech – Information Technology",
-        score: "CPI: 8.49",
+        score: "CPI: 8.38",
         period: "2023 – Present",
         location: "Nadiad, Gujarat",
     },
