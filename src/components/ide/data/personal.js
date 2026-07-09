@@ -11,7 +11,7 @@ export const personalInfo = {
 };
 export const socialLinks = {
     github: "https://github.com/vasuchandrani",
-    linkedin: "https://linkedin.com/in/vatsal-chandrani",
+    linkedin: "https://www.linkedin.com/in/vatsal-chandrani-120716288",
     codolio: "https://codolio.com/profile/vatsalchandrani",
     codeforces: "https://codeforces.com/profile/vasuchandrani",
     leetcode: "https://leetcode.com/u/vasuchandrani",
