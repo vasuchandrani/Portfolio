@@ -296,7 +296,7 @@ export const extensions = [
                 "SEO-focused architecture for improved discoverability"
             ],
             repo: "",
-            demo: "https://ratnanjaligroup.lovable.app",
+            demo: "https://ratnanjali-group.vercel.app/",
             download: "",
             status: "In Development",
         },
