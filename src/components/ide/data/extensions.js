@@ -44,6 +44,30 @@ export const extensions = [
         status: "Active",
     },
     {
+        id: "ext-campusgrid",
+        name: "CampusGrid",
+        publisher: "vatsalchandrani",
+        version: "1.0.0",
+        kind: "project",
+        tagline: "The central data backbone & identity engine powering a unified campus product ecosystem.",
+        description: "CampusGrid is the central source of truth for higher education institutions, eliminating data duplication across campus software. Instead of managing separate student and faculty databases for every tool, CampusGrid centralizes institutional profiles, academic departments, user directories, and role-based permissions under a unique CampusGrid ID. It serves as the core data infrastructure for the entire product ecosystem—managing identity, permissions, and active subscriptions for connected ecosystem products like CampusConnect and GradeMate in real-time.",
+        tags: [
+            "Ecosystem" 
+        ],
+        features: [
+            "Single source of truth for institution profiles, departments, faculty, and student directories",
+            "Unique CampusGrid ID system for zero-friction setup and instant data synchronization",
+            "Unified Role-Based Access Control (RBAC) across students, professors, HoDs, and administrators",
+            "Centralized ecosystem identity & auth engine powering CampusConnect and GradeMate",
+            "Product subscription management console tracking active seats, renewals, and sync activity",
+            "Academic structure administration for departments, branches, batches, and sections",
+        ],
+        repo: "https://github.com/vasuchandrani/Campus-Grid",
+        demo: "https://campus-grid-one.vercel.app",
+        download: "https://github.com/vasuchandrani/Campus-Grid",
+        status: "Active & Expanding Ecosystem",
+    },
+    {
         id: "ext-citystore-system-design",
         name: "CityStore System Design",
         publisher: "vatsalchandrani",
@@ -105,7 +129,7 @@ export const extensions = [
             "Established system design decisions before implementation to reduce architectural risk."
         ],
         repo: "https://github.com/vasuchandrani/College-Book-System-Design",
-        demo: "https://collegebook.lovable.app",
+        demo: "https://college-book-snowy.vercel.app/",
         download: "",
         status: "In Progress",
     },
@@ -127,7 +151,7 @@ export const extensions = [
             "Admin dashboard, mock OTP signup flow, mobile APK download, and college-locked profiles for trust and authenticity.",
         ],
         repo: "https://github.com/vasuchandrani/College-Book",
-        demo: "https://collegebook.lovable.app",
+        demo: "https://college-book-snowy.vercel.app/",
         download: "/downloads/collegebook.apk",
         status: "In Development",
     },
@@ -149,7 +173,7 @@ export const extensions = [
             "HoD oversight: drill down from professor → exam → student submission."
         ],
         repo: "",
-        demo: "https://grademates.lovable.app",
+        demo: "https://grade-mate-ten.vercel.app/",
         download: "",
         status: "Planned"
     },
