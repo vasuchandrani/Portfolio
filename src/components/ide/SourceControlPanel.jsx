@@ -33,18 +33,18 @@ const typeMeta = {
 };
 export function SourceControlPanel() {
     return (<div className="h-full w-full overflow-auto bg-ide-bg text-ide-text font-mono">
-      <div className="border-b border-ide-border bg-ide-surface px-6 py-4 sticky top-0 z-10">
+      <div className="border-b border-ide-border bg-ide-surface px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ide-accent">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ide-accent shrink-0">
             <circle cx="18" cy="18" r="3"/>
             <circle cx="6" cy="6" r="3"/>
             <path d="M6 21V9a9 9 0 0 0 9 9"/>
           </svg>
-          <div>
-            <h2 className="text-[14px] font-bold font-sans text-ide-text">
-              Chronicles · My Journey — git log --author="{personalInfo.name}"
+          <div className="min-w-0">
+            <h2 className="text-[13px] sm:text-[14px] font-bold font-sans text-ide-text truncate">
+              Chronicles · My Journey — git log
             </h2>
-            <p className="text-[11px] text-ide-text-dim font-sans font-semibold mt-0.5">
+            <p className="text-[11px] text-ide-text-dim font-sans font-semibold mt-0.5 truncate">
               <span className="inline-flex items-center gap-1">
                 <span className="size-1.5 rounded-full bg-green-500"></span>
                 main
@@ -52,13 +52,13 @@ export function SourceControlPanel() {
               <span className="mx-2 text-ide-text-faint">•</span>
               {journey.length} entries
               <span className="mx-2 text-ide-text-faint">•</span>
-              All of the experiences, project-ideas, achievements, and learnings that have shaped my journey.
+              Experiences & milestones
             </p>
           </div>
         </div>
       </div>
 
-      <div className="px-6 py-5">
+      <div className="px-3.5 sm:px-6 py-4 sm:py-5">
         {journey.map((j, i) => {
             const m = typeMeta[j.type] ?? typeMeta.start;
             return (<div key={j.hash} className="relative pl-9 pb-6 last:pb-2">

@@ -67,20 +67,27 @@ export const files = [
 ];
 export function ResumeContent() {
     return (<div className="relative h-full w-full flex flex-col">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-ide-border bg-ide-surface/40">
+      <div className="flex items-center justify-between px-3 sm:px-4 py-2 border-b border-ide-border bg-ide-surface/40 flex-wrap gap-2">
         <div className="text-[12px] text-ide-text-dim font-sans">
-          📄 Resume — Vatsal Chandrani
+          📄 Resume — {personalInfo.name}
         </div>
-        <a href="/Resume.pdf" download="Vatsal_Chandrani_Resume.pdf" className="px-3 py-1 text-[11px] rounded border border-ide-border bg-ide-surface hover:bg-ide-hover hover:text-ide-text text-ide-text-dim transition-colors font-sans">
-          ⬇ Download PDF
-        </a>
+        <div className="flex items-center gap-2">
+          <a href="/Resume.pdf" target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 text-[11px] rounded border border-ide-border bg-ide-surface hover:bg-ide-hover hover:text-ide-text text-ide-text-dim transition-colors font-sans">
+            ↗ Open PDF
+          </a>
+          <a href="/Resume.pdf" download="Vatsal_Chandrani_Resume.pdf" className="px-3 py-1 text-[11px] rounded border border-ide-accent/40 bg-ide-accent/15 text-ide-accent hover:bg-ide-accent/25 transition-colors font-sans font-semibold">
+            ⬇ Download
+          </a>
+        </div>
       </div>
-      <iframe src="/Resume.pdf#toolbar=0&navpanes=0" title="Resume" className="flex-1 w-full bg-white"/>
+      <div className="flex-1 w-full bg-white relative">
+        <iframe src="/Resume.pdf#toolbar=0&navpanes=0" title="Resume" className="w-full h-full border-0"/>
+      </div>
     </div>);
 }
 export function AboutContent() {
   let lineNum = 1;
-    return (<div className="whitespace-pre font-mono text-[13px] leading-[1.65]">
+    return (<div className="whitespace-pre font-mono text-[12px] sm:text-[13px] leading-[1.65] overflow-x-auto">
       <Line n={lineNum++}><Comment>#include &lt;bits/stdc++.h&gt;</Comment></Line>
       <Line n={lineNum++}><Kw>using namespace</Kw> <Tp>std</Tp>;</Line>
       <Line n={lineNum++}><br /></Line>
@@ -115,7 +122,7 @@ export function AboutContent() {
 export function EducationContent() {
   let lineNum = 1;
   let lineCounter = 38;
-    return (<div className="whitespace-pre font-mono text-[13px] leading-[1.65]">
+    return (<div className="whitespace-pre font-mono text-[12px] sm:text-[13px] leading-[1.65] overflow-x-auto">
       <Line n={lineNum++}><Comment>#include &lt;stdio.h&gt;</Comment></Line>
       <Line n={lineNum++}><Comment>#include &lt;string.h&gt;</Comment></Line>
       <Line n={lineNum++}><br /></Line>
@@ -162,20 +169,20 @@ const projectExtMap = {
 export function ProjectsContent({ initialPreview = false, onViewMoreExtension, } = {}) {
     const [preview, setPreview] = useState(initialPreview);
     if (preview) {
-        return (<div className="relative p-4 font-sans text-[13px] leading-relaxed">
-        <button onClick={() => setPreview(false)} className="absolute top-2 right-3 z-10 px-2.5 py-1 text-[11px] rounded border border-ide-border bg-ide-surface/90 backdrop-blur text-ide-text-dim hover:bg-ide-hover hover:text-ide-text transition-colors shadow-sm">
+        return (<div className="relative p-3 sm:p-4 font-sans text-[13px] leading-relaxed">
+        <button onClick={() => setPreview(false)} className="absolute top-2 right-2.5 sm:right-3 z-10 px-2.5 py-1 text-[11px] rounded border border-ide-border bg-ide-surface/90 backdrop-blur text-ide-text-dim hover:bg-ide-hover hover:text-ide-text transition-colors shadow-sm">
           ← Source
         </button>
-        <h1 className="text-xl font-bold text-ide-text mb-6">Projects</h1>
+        <h1 className="text-lg sm:text-xl font-bold text-ide-text mb-4 sm:mb-6">Projects</h1>
         {projects.map((p) => {
                 const extId = projectExtMap[p.name];
-                return (<div key={p.name} className="mb-6 p-4 rounded-lg border border-ide-border bg-ide-surface">
-              <h2 className="text-lg font-semibold text-syn-function mb-1">{p.emoji} {p.name}</h2>
-              <p className="text-ide-text-dim text-[12px] mb-2">{p.stack.join(" · ")}</p>
-              <p className="text-ide-text mb-3">{p.description}</p>
+                return (<div key={p.name} className="mb-4 sm:mb-6 p-3.5 sm:p-4 rounded-lg border border-ide-border bg-ide-surface">
+              <h2 className="text-[16px] sm:text-lg font-semibold text-syn-function mb-1">{p.emoji} {p.name}</h2>
+              <p className="text-ide-text-dim text-[11.5px] sm:text-[12px] mb-2">{p.stack.join(" · ")}</p>
+              <p className="text-ide-text text-[12.5px] sm:text-[13px] mb-3 leading-relaxed">{p.description}</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <a href={p.github} target="_blank" rel="noopener noreferrer" className="text-syn-variable underline underline-offset-2 hover:text-ide-accent transition-colors text-[12px]">📂 GitHub Repo</a>
-                {extId && onViewMoreExtension && (<button onClick={() => onViewMoreExtension(extId)} className="ml-auto px-2.5 py-1 text-[11px] rounded border border-ide-accent/40 bg-ide-accent/10 text-ide-accent hover:bg-ide-accent/20 transition-colors font-sans">
+                {extId && onViewMoreExtension && (<button onClick={() => onViewMoreExtension(extId)} className="ml-auto px-2.5 py-1 text-[11px] rounded border border-ide-accent/40 bg-ide-accent/10 text-ide-accent hover:bg-ide-accent/20 transition-colors font-sans font-medium">
                     View More →
                   </button>)}
               </div>
@@ -184,8 +191,8 @@ export function ProjectsContent({ initialPreview = false, onViewMoreExtension, }
       </div>);
     }
     let lineNum = 1;
-    return (<div className="relative whitespace-pre font-mono text-[13px] leading-[1.65]">
-      <button onClick={() => setPreview(true)} className="absolute top-1 right-3 z-10 px-2.5 py-1 text-[11px] rounded border border-ide-border bg-ide-surface/90 backdrop-blur text-ide-text-dim hover:bg-ide-hover hover:text-ide-text transition-colors font-sans shadow-sm">
+    return (<div className="relative whitespace-pre font-mono text-[12px] sm:text-[13px] leading-[1.65] overflow-x-auto">
+      <button onClick={() => setPreview(true)} className="absolute top-1 right-2.5 sm:right-3 z-10 px-2.5 py-1 text-[11px] rounded border border-ide-border bg-ide-surface/90 backdrop-blur text-ide-text-dim hover:bg-ide-hover hover:text-ide-text transition-colors font-sans shadow-sm">
         👁 Preview
       </button>
       <Line n={lineNum++}><span className="text-syn-keyword font-bold"># Projects</span></Line>
@@ -205,7 +212,7 @@ export function ProjectsContent({ initialPreview = false, onViewMoreExtension, }
 }
 export function SkillsContent() {
   let lineNum = 1;
-    return (<div className="whitespace-pre font-mono text-[13px] leading-[1.65]">
+    return (<div className="whitespace-pre font-mono text-[12px] sm:text-[13px] leading-[1.65] overflow-x-auto">
       <Line n={lineNum++}><br /></Line>
       <Line n={lineNum++}><Kw>const</Kw> <Vr>developer</Vr> = <Str>"{personalInfo.name}"</Str>;</Line>
       <Line n={lineNum++}><Kw>const</Kw> <Vr>specialization</Vr> = <Str>"{skills.specialization || "DSA & Backend Engineering"}"</Str>;</Line>
@@ -245,7 +252,7 @@ export function SkillsContent() {
 }
 export function ExperienceContent() {
   let lineNum = 1;  
-    return (<div className="whitespace-pre font-mono text-[13px] leading-[1.65]">
+    return (<div className="whitespace-pre font-mono text-[12px] sm:text-[13px] leading-[1.65] overflow-x-auto">
       <Line n={lineNum++}><Kw>package</Kw> <Vr>career</Vr>;</Line>
       <Line n={lineNum++}><br /></Line>
       <Line n={lineNum++}><Kw>public class</Kw> <Tp>Experience</Tp> {"{"}</Line>
@@ -271,7 +278,7 @@ export function ExperienceContent() {
 }
 export function AchievementsContent() {
   let lineNum = 1;
-    return (<div className="whitespace-pre font-mono text-[13px] leading-[1.65]">
+    return (<div className="whitespace-pre font-mono text-[12px] sm:text-[13px] leading-[1.65] overflow-x-auto">
       <Line n={lineNum++}><Kw>CREATE TABLE</Kw> <Tp>achievements</Tp> (</Line>
       <Line n={lineNum++}>{"  "}<Vr>id</Vr>        <Tp>SERIAL</Tp> <Kw>PRIMARY KEY</Kw>,</Line>
       <Line n={lineNum++}>{"  "}<Vr>platform</Vr>  <Tp>VARCHAR</Tp>(<Num>50</Num>) <Kw>NOT NULL</Kw>,</Line>

@@ -5,16 +5,20 @@ import { WelcomePage } from "./WelcomePage";
 import { TerminalPanel, OutputPanel } from "./TerminalPanel";
 import { SourceControlPanel } from "./SourceControlPanel";
 import { ExtensionsPanel, ExtensionDetail } from "./ExtensionsPanel";
+import { useIsMobile } from "../../hooks/use-mobile";
+
 export function IDEPortfolio() {
+    const isMobile = useIsMobile();
     const [activeFile, setActiveFile] = useState("welcome");
     const [openFiles, setOpenFiles] = useState([]);
     const [showBottomPanel, setShowBottomPanel] = useState(true);
-  const [terminalSessionId, setTerminalSessionId] = useState(0);
+    const [terminalSessionId, setTerminalSessionId] = useState(0);
     const [sidebarPanel, setSidebarPanel] = useState("explorer");
     const [sidebarWidth, setSidebarWidth] = useState(260);
     const [terminalHeight, setTerminalHeight] = useState(220);
     const [outputBlock, setOutputBlock] = useState(null);
     const [projectsPreview, setProjectsPreview] = useState(false);
+    const [mobileBottomTab, setMobileBottomTab] = useState("terminal");
     const isDragging = useRef(false);
     const isTerminalDragging = useRef(false);
     const activeFileData = files.find((f) => f.id === activeFile);
@@ -25,6 +29,12 @@ export function IDEPortfolio() {
         setActiveFile(tabId);
         setShowBottomPanel(false);
         setSidebarPanel("extensions");
+    }, []);
+    const handleSetOutputBlock = useCallback((block) => {
+        setOutputBlock(block);
+        if (block) {
+            setMobileBottomTab("output");
+        }
     }, []);
     const fileContentMap = {
         about: <AboutContent />,
@@ -93,14 +103,14 @@ export function IDEPortfolio() {
             const mod = e.ctrlKey || e.metaKey;
             if (mod && (e.key === "`" || e.code === "Backquote")) {
                 e.preventDefault();
-            const next = !showBottomPanel;
-            if (next) {
-              setTerminalSessionId((value) => value + 1);
-              if (sidebarPanel === "scm" || sidebarPanel === "extensions") {
-                setSidebarPanel("explorer");
-              }
-            }
-            setShowBottomPanel(next);
+                const next = !showBottomPanel;
+                if (next) {
+                    setTerminalSessionId((value) => value + 1);
+                    if (sidebarPanel === "scm" || sidebarPanel === "extensions") {
+                        setSidebarPanel("explorer");
+                    }
+                }
+                setShowBottomPanel(next);
                 return;
             }
             if (e.altKey && (e.key.toLowerCase() === "w" || e.key.toLowerCase() === "c")) {
@@ -147,16 +157,16 @@ export function IDEPortfolio() {
     }, []);
     return (<div className="h-dvh w-full flex flex-col bg-ide-bg text-ide-text antialiased text-[13px] selection:bg-ide-accent/20 overflow-hidden font-mono">
       <div className="h-8 bg-ide-bg border-b border-ide-border flex items-center justify-center relative shrink-0 text-ide-text-dim text-[11px]">
-        <div className="absolute left-4 flex gap-2">
-          <div className="size-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"/>
-          <div className="size-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"/>
-          <div className="size-3 rounded-full bg-[#27c93f] border border-[#1aab29]"/>
+        <div className="absolute left-3 sm:left-4 flex gap-1.5 sm:gap-2">
+          <div className="size-2.5 sm:size-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"/>
+          <div className="size-2.5 sm:size-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"/>
+          <div className="size-2.5 sm:size-3 rounded-full bg-[#27c93f] border border-[#1aab29]"/>
         </div>
-        <span className="font-sans font-medium">Vatsal Chandrani — Portfolio</span>
+        <span className="font-sans font-medium text-[11px] sm:text-[12px] truncate px-16">Vatsal Chandrani — Portfolio</span>
       </div>
 
       <div className="flex flex-1 min-h-0">
-        <div className="w-12 bg-ide-panel flex flex-col items-center py-3 gap-5 shrink-0 text-ide-text-dim">
+        <div className="w-11 sm:w-12 bg-ide-panel flex flex-col items-center py-3 gap-4 sm:gap-5 shrink-0 text-ide-text-dim">
           <ActivityIcon active={sidebarPanel === "explorer"} onClick={() => {
             const next = sidebarPanel === "explorer" ? null : "explorer";
             setSidebarPanel(next);
@@ -250,17 +260,26 @@ export function IDEPortfolio() {
           </>)}
 
         <div className="flex flex-1 flex-col min-w-0 min-h-0 bg-ide-bg">
-          {sidebarPanel === "scm" ? (<SourceControlPanel />) : (<>
-          <div className="flex gap-2 overflow-x-auto border-b border-ide-border/50 px-3 py-2 md:hidden">
-            {files.map((file) => (<button key={file.id} onClick={() => openFile(file.id)} className={`shrink-0 rounded-md border px-2.5 py-1 text-[11px] font-sans transition-colors ${activeFile === file.id
-                    ? "border-ide-accent bg-ide-hover text-ide-text"
+          {sidebarPanel === "scm" ? (
+            <SourceControlPanel />
+          ) : isMobile && sidebarPanel === "extensions" && !activeFile.startsWith("ext:") ? (
+            <div className="flex-1 min-h-0 overflow-auto">
+              <ExtensionsPanel onOpenDetail={openExtensionDetail} activeId={activeExtensionId}/>
+            </div>
+          ) : (<>
+          <div className="flex gap-1.5 overflow-x-auto border-b border-ide-border/50 px-2.5 py-1.5 md:hidden scrollbar-none touch-pan-x bg-ide-surface/40 shrink-0">
+            {files.map((file) => (<button key={file.id} onClick={() => openFile(file.id)} className={`shrink-0 rounded-md border px-2 py-0.5 text-[11px] font-sans transition-colors flex items-center gap-1.5 ${activeFile === file.id
+                    ? "border-ide-accent bg-ide-hover text-ide-text font-bold"
                     : "border-ide-border text-ide-text-dim hover:bg-ide-hover hover:text-ide-text"}`}>
-                {file.name}
+                <span className="text-[9px] font-bold font-mono" style={{ color: file.languageColor }}>
+                  {file.icon}
+                </span>
+                <span>{file.name}</span>
               </button>))}
           </div>
 
-          <div className="h-9 bg-ide-tab flex overflow-x-auto shrink-0">
-            <button onClick={() => setActiveFile("welcome")} className={`px-3 flex items-center gap-2 min-w-[120px] max-w-[180px] text-[12px] border-r border-ide-border transition-colors shrink-0 ${activeFile === "welcome"
+          <div className="h-9 bg-ide-tab flex overflow-x-auto shrink-0 scrollbar-none touch-pan-x">
+            <button onClick={() => setActiveFile("welcome")} className={`px-3 flex items-center gap-2 min-w-[100px] sm:min-w-[120px] max-w-[180px] text-[12px] border-r border-ide-border transition-colors shrink-0 ${activeFile === "welcome"
                 ? "bg-ide-tab-active border-t-2 border-t-ide-accent text-ide-text"
                 : "text-ide-text-dim hover:bg-ide-hover border-t-2 border-t-transparent"}`}>
               <span className="text-[10px]">⚡</span>
@@ -280,36 +299,36 @@ export function IDEPortfolio() {
                         setActiveFile(fId);
                         if (isExt)
                             setShowBottomPanel(false);
-                    }} className={`group px-3 flex items-center gap-2 min-w-[120px] max-w-[200px] text-[12px] border-r border-ide-border transition-colors shrink-0 ${isActive
+                    }} className={`group px-3 flex items-center gap-2 min-w-[100px] sm:min-w-[120px] max-w-[200px] text-[12px] border-r border-ide-border transition-colors shrink-0 ${isActive
                         ? "bg-ide-tab-active border-t-2 border-t-ide-accent text-ide-text"
                         : "text-ide-text-dim hover:bg-ide-hover border-t-2 border-t-transparent"}`}>
                   <span className="text-[10px] font-bold" style={{ color: tabColor }}>
                     {tabIcon}
                   </span>
                   <span className="truncate">{tabName}</span>
-                  <span onClick={(e) => closeFile(fId, e)} className="ml-auto text-ide-text-faint hover:text-ide-text text-[10px] opacity-0 group-hover:opacity-100 transition-opacity p-1" style={{ opacity: isActive ? 1 : undefined }}>
+                  <span onClick={(e) => closeFile(fId, e)} className="ml-auto text-ide-text-faint hover:text-ide-text text-[10px] opacity-70 sm:opacity-0 group-hover:opacity-100 transition-opacity p-1" style={{ opacity: isActive ? 1 : undefined }}>
                     ✕
                   </span>
                 </button>);
             })}
           </div>
 
-          {activeFile !== "welcome" && !activeFile.startsWith("ext:") && activeFileData && (<div className="h-7 flex items-center px-4 text-[11px] text-ide-text-dim border-b border-ide-border/50 shrink-0 gap-1.5 font-sans">
+          {activeFile !== "welcome" && !activeFile.startsWith("ext:") && activeFileData && (<div className="h-7 flex items-center px-3 sm:px-4 text-[11px] text-ide-text-dim border-b border-ide-border/50 shrink-0 gap-1.5 font-sans overflow-x-auto scrollbar-none">
               <span>vatsal_chandrani</span>
               <span className="text-ide-text-faint">›</span>
               <span style={{ color: activeFileData.languageColor }} className="text-[9px] font-bold font-mono">
                 {activeFileData.icon}
               </span>
-              <span>{activeFileData.name}</span>
+              <span className="truncate">{activeFileData.name}</span>
             </div>)}
-          {activeFile.startsWith("ext:") && (<div className="h-7 flex items-center px-4 text-[11px] text-ide-text-dim border-b border-ide-border/50 shrink-0 gap-1.5 font-sans">
+          {activeFile.startsWith("ext:") && (<div className="h-7 flex items-center px-3 sm:px-4 text-[11px] text-ide-text-dim border-b border-ide-border/50 shrink-0 gap-1.5 font-sans overflow-x-auto scrollbar-none">
               <span>arsenal</span>
               <span className="text-ide-text-faint">›</span>
               <span className="text-ide-accent font-bold">★</span>
-              <span>{extensions.find((e) => e.id === activeFile.slice(4))?.name ?? "Item"}</span>
+              <span className="truncate">{extensions.find((e) => e.id === activeFile.slice(4))?.name ?? "Item"}</span>
             </div>)}
 
-          <div className={`flex-1 min-h-0 overflow-auto ${activeFile === "resume" || activeFile.startsWith("ext:") ? "" : "py-4 px-2"}`}>
+          <div className={`flex-1 min-h-0 overflow-auto ${activeFile === "resume" || activeFile.startsWith("ext:") ? "" : "py-3 sm:py-4 px-2 sm:px-3"}`}>
             {activeFile === "welcome" ? (<WelcomePage onOpenFile={openFile}/>) : activeFile.startsWith("ext:") ? (<ExtensionDetail id={activeFile.slice(4)}/>) : (fileContentMap[activeFile])}
           </div>
 
@@ -317,22 +336,49 @@ export function IDEPortfolio() {
               <div onMouseDown={onTerminalMouseDown} className="relative h-1.5 -my-[2px] cursor-row-resize shrink-0 group z-10" role="separator" aria-orientation="horizontal">
                 <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-ide-divider group-hover:bg-ide-accent group-active:bg-ide-accent transition-colors"/>
               </div>
-              <div className="bg-ide-bg flex shrink-0 relative min-h-0" style={{ height: terminalHeight }}>
-                <div className="flex-1 flex flex-col min-w-0 min-h-0">
-                  <div className="px-4 h-7 flex items-center text-[10px] uppercase tracking-wider text-ide-text font-sans border-b border-ide-divider/60 shrink-0 font-semibold">
-                    Terminal
-                  </div>
-                  <TerminalPanel bootSequenceKey={terminalSessionId} onPreviewProjects={handlePreviewProjects} onOutput={setOutputBlock} onOpenFile={openFile}/>
-                </div>
-                <div className="w-px bg-ide-divider shrink-0"/>
-                <div className="flex-1 flex flex-col min-w-0 min-h-0">
-                  <div className="px-4 h-7 flex items-center justify-between text-[10px] uppercase tracking-wider text-ide-text font-sans border-b border-ide-divider/60 shrink-0 font-semibold">
-                    <span>Output</span>
-                    <button onClick={() => setShowBottomPanel(false)} className="text-ide-text-faint hover:text-ide-text text-[14px] leading-none" aria-label="Close panel">
-                      ✕
+              <div className="bg-ide-bg flex flex-col shrink-0 relative min-h-0" style={{ height: terminalHeight }}>
+                {/* Mobile Tab Switcher */}
+                <div className="md:hidden flex items-center justify-between px-3 h-7 border-b border-ide-divider/60 shrink-0 font-sans bg-ide-surface/30">
+                  <div className="flex gap-1">
+                    <button onClick={() => setMobileBottomTab("terminal")} className={`px-2.5 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded transition-colors ${mobileBottomTab === "terminal" ? "bg-ide-hover text-ide-accent" : "text-ide-text-dim"}`}>
+                      Terminal
+                    </button>
+                    <button onClick={() => setMobileBottomTab("output")} className={`px-2.5 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded transition-colors ${mobileBottomTab === "output" ? "bg-ide-hover text-ide-accent" : "text-ide-text-dim"}`}>
+                      Output {outputBlock ? "●" : ""}
                     </button>
                   </div>
-                  <OutputPanel block={outputBlock}/>
+                  <button onClick={() => setShowBottomPanel(false)} className="text-ide-text-faint hover:text-ide-text text-[14px] leading-none" aria-label="Close panel">
+                    ✕
+                  </button>
+                </div>
+
+                {/* Mobile View */}
+                <div className="md:hidden flex-1 min-h-0 flex flex-col">
+                  {mobileBottomTab === "terminal" ? (
+                    <TerminalPanel bootSequenceKey={terminalSessionId} onPreviewProjects={handlePreviewProjects} onOutput={handleSetOutputBlock} onOpenFile={openFile}/>
+                  ) : (
+                    <OutputPanel block={outputBlock}/>
+                  )}
+                </div>
+
+                {/* Desktop View (Side by Side) */}
+                <div className="hidden md:flex flex-1 min-h-0">
+                  <div className="flex-1 flex flex-col min-w-0 min-h-0">
+                    <div className="px-4 h-7 flex items-center text-[10px] uppercase tracking-wider text-ide-text font-sans border-b border-ide-divider/60 shrink-0 font-semibold">
+                      Terminal
+                    </div>
+                    <TerminalPanel bootSequenceKey={terminalSessionId} onPreviewProjects={handlePreviewProjects} onOutput={handleSetOutputBlock} onOpenFile={openFile}/>
+                  </div>
+                  <div className="w-px bg-ide-divider shrink-0"/>
+                  <div className="flex-1 flex flex-col min-w-0 min-h-0">
+                    <div className="px-4 h-7 flex items-center justify-between text-[10px] uppercase tracking-wider text-ide-text font-sans border-b border-ide-divider/60 shrink-0 font-semibold">
+                      <span>Output</span>
+                      <button onClick={() => setShowBottomPanel(false)} className="text-ide-text-faint hover:text-ide-text text-[14px] leading-none" aria-label="Close panel">
+                        ✕
+                      </button>
+                    </div>
+                    <OutputPanel block={outputBlock}/>
+                  </div>
                 </div>
               </div>
               </>)}
@@ -340,12 +386,12 @@ export function IDEPortfolio() {
         </div>
       </div>
 
-      <div className="h-[26px] bg-ide-panel border-t border-ide-border text-ide-text-dim flex items-center justify-center px-3 text-[11px] shrink-0 font-sans gap-1">
-        <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:bg-ide-hover hover:text-ide-text px-2 py-0.5 rounded transition-colors">
+      <div className="h-[26px] bg-ide-panel border-t border-ide-border text-ide-text-dim flex items-center justify-start sm:justify-center px-3 text-[11px] shrink-0 font-sans gap-1 overflow-x-auto scrollbar-none touch-pan-x">
+        <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:bg-ide-hover hover:text-ide-text px-2 py-0.5 rounded transition-colors shrink-0">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="#f5f5f5"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           GitHub
         </a>
-        <a href={socialLinks.codolio} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:bg-ide-hover hover:text-ide-text px-2 py-0.5 rounded transition-colors">
+        <a href={socialLinks.codolio} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:bg-ide-hover hover:text-ide-text px-2 py-0.5 rounded transition-colors shrink-0">
           <span className="text-[#22d3ee] font-bold text-[12px]">{"</>"}</span>
           Codolio
         </a>

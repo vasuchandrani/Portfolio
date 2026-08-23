@@ -183,9 +183,9 @@ export function ExtensionDetail({ id }) {
 
     const style = kindStyles[ext.kind] || kindStyles.project;
     return (<div className="h-full w-full overflow-auto bg-ide-bg text-ide-text font-sans">
-      <div className="border-b border-ide-border bg-ide-surface px-8 py-6">
-        <div className="flex items-start gap-5">
-          <div className="size-20 shrink-0 rounded-xl flex items-center justify-center font-bold text-[36px] font-mono" 
+      <div className="border-b border-ide-border bg-ide-surface px-4 sm:px-8 py-4 sm:py-6">
+        <div className="flex flex-col sm:flex-row items-start gap-3.5 sm:gap-5">
+          <div className="size-14 sm:size-20 shrink-0 rounded-xl flex items-center justify-center font-bold text-[26px] sm:text-[36px] font-mono" 
             style={{
               background: style.iconBg,
               color: style.iconColor,
@@ -193,8 +193,8 @@ export function ExtensionDetail({ id }) {
             {ext.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-[22px] font-bold text-ide-text">{ext.name}</h1>
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              <h1 className="text-[19px] sm:text-[22px] font-bold text-ide-text">{ext.name}</h1>
               <span className="text-[11px] px-2 py-0.5 rounded border border-ide-border text-ide-text-dim font-mono">
                 v{ext.version}
               </span>
@@ -209,25 +209,25 @@ export function ExtensionDetail({ id }) {
               </span>
             )}
             </div>
-            <p className="text-[13px] text-ide-text font-semibold mt-1">{ext.tagline}</p>
-            <p className="text-[11px] text-ide-text-dim font-semibold mt-1">
+            <p className="text-[12.5px] sm:text-[13px] text-ide-text font-semibold mt-1">{ext.tagline}</p>
+            <p className="text-[11px] text-ide-text-dim font-semibold mt-0.5">
               {ext.publisher} · {ext.status}
             </p>
 
-            <div className="flex gap-2 mt-4 flex-wrap">
-              {ext.download && (<a href={ext.download} target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 rounded bg-ide-accent text-white text-[12px] font-semibold hover:opacity-90 transition-opacity">
+            <div className="flex gap-2 mt-3.5 sm:mt-4 flex-wrap">
+              {ext.download && (<a href={ext.download} target="_blank" rel="noopener noreferrer" className="px-3.5 sm:px-4 py-1.5 rounded bg-ide-accent text-white text-[12px] font-semibold hover:opacity-90 transition-opacity">
                   ⬇ Download
                 </a>)}
-              {ext.repo && (<a href={ext.repo} target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 rounded border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
+              {ext.repo && (<a href={ext.repo} target="_blank" rel="noopener noreferrer" className="px-3.5 sm:px-4 py-1.5 rounded border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
                   📂 Repository
                 </a>)}
-              {ext.demo && (<a href={ext.demo} target="_blank" rel="noopener noreferrer" className="px-4 py-1.5 rounded border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
+              {ext.demo && (<a href={ext.demo} target="_blank" rel="noopener noreferrer" className="px-3.5 sm:px-4 py-1.5 rounded border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
                   ▶ {ext.kind === "project" ? "View Deployment" : "View Prototype"}
                 </a>)}
               {(ext.kind === "idea" || ext.kind === "business" || ext.kind === "freelance") &&
                 !ext.repo &&
                 !ext.demo && (
-                  <span className="px-4 py-1.5 rounded border border-dashed border-amber-500/60 text-amber-400 text-[12px] font-bold">
+                  <span className="px-3.5 sm:px-4 py-1.5 rounded border border-dashed border-amber-500/60 text-amber-400 text-[12px] font-bold">
                     Coming Soon
                   </span>
               )}
@@ -236,7 +236,7 @@ export function ExtensionDetail({ id }) {
         </div>
       </div>
 
-      <div className="px-8 py-6 max-w-4xl">
+      <div className="px-4 sm:px-8 py-4 sm:py-6 max-w-4xl">
         <Section2 title="Details">
           <p className="text-[13px] text-ide-text leading-relaxed font-medium">{ext.description}</p>
         </Section2>
