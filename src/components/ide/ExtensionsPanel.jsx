@@ -12,9 +12,13 @@ export function ExtensionsPanel({ onOpenDetail, activeId }) {
     });
 
     const sections = {
+        hotFavorite: {
+            title: "HOT FAVORITE",
+            items: filtered.filter((e) => e.hotFavorite),
+        },
         project: {
             title: "PROJECTS",
-            items: filtered.filter((e) => e.kind === "project"),
+            items: filtered.filter((e) => e.kind === "project" && !e.hotFavorite),
         },
         chrome: {
             title: "CHROME EXTENSIONS",
@@ -43,7 +47,9 @@ export function ExtensionsPanel({ onOpenDetail, activeId }) {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {Object.values(sections).map((section) => (
+        {Object.values(sections)
+          .filter((section) => section.items.length > 0 || !query)
+          .map((section) => (
           <Section
             key={section.title}
             title={`${section.title} — ${section.items.length}`}
@@ -114,6 +120,11 @@ function ExtCard({ ext, active, onClick, }) {
         <div className="flex items-center gap-2">
           <span className="text-[13px] font-bold text-ide-text font-sans truncate">{ext.name}</span>
           <span className="text-[10px] text-ide-text-dim font-mono font-bold">v{ext.version}</span>
+          {ext.hotFavorite && (
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-sans font-bold flex items-center gap-0.5">
+              🔥 Hot
+            </span>
+          )}
         </div>
         <div className="text-[11px] text-ide-text-dim font-sans font-semibold truncate mt-0.5">{ext.tagline}</div>
         <div className="text-[10px] text-ide-text-dim font-sans font-semibold mt-0.5">
@@ -192,6 +203,11 @@ export function ExtensionDetail({ id }) {
             >
               {style.label}
             </span>
+            {ext.hotFavorite && (
+              <span className="text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                🔥 Hot Favorite
+              </span>
+            )}
             </div>
             <p className="text-[13px] text-ide-text font-semibold mt-1">{ext.tagline}</p>
             <p className="text-[11px] text-ide-text-dim font-semibold mt-1">

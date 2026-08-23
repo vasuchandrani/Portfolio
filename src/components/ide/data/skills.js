@@ -1,4 +1,5 @@
 export const skills = {
+    specialization: "DSA & Backend Engineering",
     experties: {
         languages: ["C", "C++", "Java"],
         web_stack: ["Node.js", "Express.js", "Spring Boot", "Spring Security", "React"],

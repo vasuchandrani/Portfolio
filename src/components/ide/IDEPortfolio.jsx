@@ -103,6 +103,19 @@ export function IDEPortfolio() {
             setShowBottomPanel(next);
                 return;
             }
+            if (e.altKey && (e.key.toLowerCase() === "w" || e.key.toLowerCase() === "c")) {
+                if (isTyping(e.target))
+                    return;
+                e.preventDefault();
+                if (activeFile && activeFile !== "welcome") {
+                    setOpenFiles((prev) => {
+                        const newOpen = prev.filter((f) => f !== activeFile);
+                        setActiveFile(newOpen.length > 0 ? newOpen[newOpen.length - 1] : "welcome");
+                        return newOpen;
+                    });
+                }
+                return;
+            }
             if (!mod || !e.shiftKey)
                 return;
             if (isTyping(e.target))
@@ -126,7 +139,7 @@ export function IDEPortfolio() {
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, [sidebarPanel, showBottomPanel]);
+    }, [sidebarPanel, showBottomPanel, activeFile]);
     const handlePreviewProjects = useCallback(() => {
         setProjectsPreview(true);
         setOpenFiles((prev) => (prev.includes("projects") ? prev : [...prev, "projects"]));

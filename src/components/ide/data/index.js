@@ -1,4 +1,4 @@
-export { personalInfo, socialLinks } from "./personal";
+export { personalInfo, socialLinks, stats, shortcuts, tourSteps } from "./personal";
 export { education } from "./education";
 export { skills } from "./skills";
 export { projects } from "./projects";

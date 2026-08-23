@@ -86,8 +86,11 @@ export function AboutContent() {
       <Line n={lineNum++}><br /></Line>
       <Line n={lineNum++}><Kw>class</Kw> <Tp>Profile</Tp> {"{"}</Line>
       <Line n={lineNum++}>{"public:"}</Line>
-      <Line n={lineNum++ }>{"  "}<Tp>string</Tp> <Vr>name</Vr> = <Str>"{personalInfo.name}"</Str>;</Line>
+      <Line n={lineNum++}>{"  "}<Tp>string</Tp> <Vr>name</Vr> = <Str>"{personalInfo.name}"</Str>;</Line>
       <Line n={lineNum++}>{"  "}<Tp>string</Tp> <Vr>role</Vr> = <Str>"{personalInfo.role}"</Str>;</Line>
+      {personalInfo.founder && (
+        <Line n={lineNum++}>{"  "}<Tp>string</Tp> <Vr>founder</Vr> = <Str>"{personalInfo.founder}"</Str>;</Line>
+      )}
       <Line n={lineNum++}>{"  "}<Tp>string</Tp> <Vr>degree</Vr> = <Str>"{personalInfo.degree}"</Str>;</Line>
       <Line n={lineNum++}>{"  "}<Tp>string</Tp> <Vr>university</Vr> = <Str>"{personalInfo.university}"</Str>;</Line>
       <Line n={lineNum++}><br /></Line>
@@ -96,15 +99,15 @@ export function AboutContent() {
       <Line n={lineNum++}>{"  "}<Tp>string</Tp> <Vr>focus</Vr> = <Str>"{personalInfo.focus}"</Str>;</Line>
       <Line n={lineNum++}><br /></Line>
       <Line n={lineNum++}>{"  "}<Tp>vector</Tp>&lt;<Tp>string</Tp>&gt; <Fn>interests</Fn>() {"{"}</Line>
-      <Line n={lineNum++}>{"    "}<Kw>return</Kw> {"{"}<Str>"Data Structures and Algorithms"</Str>, <Str>"Competitive Programming"</Str>, <Str>"Develop Innovative Solutions"</Str>{"}"};</Line>
-
-
+      <Line n={lineNum++}>{"    "}<Kw>return</Kw> {"{"}{(personalInfo.interests || []).map((interest, i) => (
+        <span key={i}><Str>"{interest}"</Str>{i < personalInfo.interests.length - 1 ? ", " : ""}</span>
+      ))}{"}"};</Line>
       <Line n={lineNum++}>{"  }"}</Line>
       <Line n={lineNum++}>{"};"}</Line>
       <Line n={lineNum++}><br /></Line>
       <Line n={lineNum++}><Tp>int</Tp> <Fn>main</Fn>() {"{"}</Line>
       <Line n={lineNum++}>{"  "}<Tp>Profile</Tp> <Vr>vatsal</Vr>;</Line>
-      <Line n={lineNum++}>{"  "}<Tp>cout</Tp> &lt;&lt; <Str>"Let's build an innovative tech experience."</Str> &lt;&lt; <Str>"\\n"</Str>;</Line>
+      <Line n={lineNum++}>{"  "}<Tp>cout</Tp> &lt;&lt; <Str>"{personalInfo.focus}"</Str> &lt;&lt; <Str>"\\n"</Str>;</Line>
       <Line n={lineNum++}>{"  "}<Kw>return</Kw> <Num>0</Num>;</Line>
       <Line n={lineNum++}>{"}"}</Line>
     </div>);
@@ -149,8 +152,12 @@ export function EducationContent() {
 }
 const projectExtMap = {
     CampusConnect: "ext-campusconnect",
+    CollegeBook: "collegebook",
+    CampusGrid: "ext-campusgrid",
+    "Financial Early Warning System": "ext-early-anomaly-detection",
+    "AI Powered Meet Summarizer": "ext-ai-meet-summarizer",
     BidVault: "ext-bidvault",
-    CollegeBook: "ext-collegebook-dbms",
+    Bidvault: "ext-bidvault",
 };
 export function ProjectsContent({ initialPreview = false, onViewMoreExtension, } = {}) {
     const [preview, setPreview] = useState(initialPreview);
@@ -201,7 +208,7 @@ export function SkillsContent() {
     return (<div className="whitespace-pre font-mono text-[13px] leading-[1.65]">
       <Line n={lineNum++}><br /></Line>
       <Line n={lineNum++}><Kw>const</Kw> <Vr>developer</Vr> = <Str>"{personalInfo.name}"</Str>;</Line>
-      <Line n={lineNum++}><Kw>const</Kw> <Vr>specialization</Vr> = <Str>"DSA & Backend Engineering"</Str>;</Line>
+      <Line n={lineNum++}><Kw>const</Kw> <Vr>specialization</Vr> = <Str>"{skills.specialization || "DSA & Backend Engineering"}"</Str>;</Line>
       <Line n={lineNum++}><br /></Line>
       <Line n={lineNum++}><Kw>const</Kw> <Vr>experties</Vr> = {"{"}</Line>
       <Line n={lineNum++}>{"  "}<Vr>languages</Vr>: [{skills.experties.languages.map((s, i) => <span key={i}><Str>"{s}"</Str>{i < skills.experties.languages.length - 1 ? ", " : ""}</span>)}],</Line>

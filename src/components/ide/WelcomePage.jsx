@@ -1,38 +1,11 @@
 import { useEffect, useState } from "react";
-import { personalInfo, socialLinks, achievements, skills } from "./portfolioData";
+import { personalInfo, socialLinks, achievements, skills, stats, shortcuts, tourSteps } from "./portfolioData";
+import { files } from "./fileData";
 import { FaGithub } from "react-icons/fa";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
+
 const TOUR_KEY = "vatsal-portfolio-tour-seen-v1";
-const tourSteps = [
-    {
-        title: "Hello Curious Visitor 😄, welcome to my portfolio",
-        body: "This isn't a regular site — it's a working code editor. Files, terminal, timeline, projects panel… all real. Let me give you a small tour.",
-    },
-    {
-        title: "📁 Workspace · Codebase",
-        body: "First icon in the left sidebar is file explorer. Open any code file to explore me ;).",
-    },
-    {
-        title: "🧩 Arsenal · My Toolkit",
-        body: "Projects & ideas are weapons for an engineer, The second icon opens my weapons, all projects and future ideas as installable cards. Click any one for the full detail page.",
-    },
-    {
-        title: "🌿 Chronicles · My Journey",
-        body: "The Third icon opens my life's timeline — every learning, experience, achievement and joy, laid out as a visual log.",
-    },
-    {
-        title: "💻 An interactive Terminal",
-        body: "Here in the terminal, you can run commands and execute codes. Type help to see all commands.",
-    },
-    {
-      title: "⌨️ Shortcuts",
-      body: `Ctrl + \`  → Toggle Terminal
-            Ctrl + Shift + E → Open Workspace
-            Ctrl + Shift + G → Open Chronicles
-            Ctrl + Shift + X → Open Arsenal
-            Have a great exploration!`,
-    },
-];
+
 function OnboardingTour({ onClose }) {
     const [step, setStep] = useState(0);
     const isLast = step === tourSteps.length - 1;
@@ -49,10 +22,11 @@ function OnboardingTour({ onClose }) {
           <h3 className="text-[18px] font-bold text-ide-text mb-3">{s.title}</h3>
           {s.title === "⌨️ Shortcuts" ? (
             <div className="space-y-2 text-[13px] text-ide-text font-medium">
-              <div><kbd>Ctrl + `</kbd> → Toggle Terminal</div>
-              <div><kbd>Ctrl + Shift + E</kbd> → Open Workspace</div>
-              <div><kbd>Ctrl + Shift + G</kbd> → Open Chronicles</div>
-              <div><kbd>Ctrl + Shift + X</kbd> → Open Arsenal</div>
+              {shortcuts.map((sc) => (
+                <div key={sc.keys}>
+                  <kbd className="font-mono">{sc.keys}</kbd> → {sc.label}
+                </div>
+              ))}
               <div><big>Have a great exploration! :)</big></div>
             </div>
           ) : (
@@ -77,6 +51,7 @@ function OnboardingTour({ onClose }) {
       </div>
     </div>);
 }
+
 export function WelcomePage({ onOpenFile }) {
     const [showTour, setShowTour] = useState(false);
     useEffect(() => {
@@ -98,26 +73,16 @@ export function WelcomePage({ onOpenFile }) {
         catch {
         }
     };
-    const quickLinks = [
-        { label: "About.cpp", id: "about", icon: "C++", color: "#649ad2" },
-        { label: "Education.c", id: "education", icon: "C", color: "#555555" },
-        { label: "Projects.md", id: "projects", icon: "MD", color: "#858585" },
-        { label: "Skills.js", id: "skills", icon: "JS", color: "#f7df1e" },
-        { label: "Experience.java", id: "experience", icon: "JV", color: "#f89820" },
-        { label: "Achievements.sql", id: "achievements", icon: "SQL", color: "#e38c00" },
-    ];
-    const stats = [
-        { label: "CPI", value: personalInfo.cpi.toString() },
-        { label: "Problems", value: "950+" },
-        { label: "CF Rating", value: "1271" },
-        { label: "LC Rating", value: "1651" },
-    ];
-    const shortcuts = [
-        { keys: "Ctrl + `", label: "Toggle terminal" },
-        { keys: "Ctrl + Shift + E", label: "Workspace · Codebase" },
-        { keys: "Ctrl + Shift + X", label: "Arsenal · Toolkit" },
-        { keys: "Ctrl + Shift + G", label: "Chronicles · Journey" },
-    ];
+    
+    const quickLinks = files
+        .filter((f) => f.id !== "resume")
+        .map((f) => ({
+            label: f.name,
+            id: f.id,
+            icon: f.icon,
+            color: f.languageColor,
+        }));
+
     return (<div className="flex-1 overflow-auto font-sans">
       {showTour && <OnboardingTour onClose={closeTour}/>}
       <div className="max-w-4xl mx-auto px-6 py-10">
@@ -132,6 +97,13 @@ export function WelcomePage({ onOpenFile }) {
             Hi, I'm <span className="text-ide-accent">{personalInfo.name.split(" ")[0]}</span>.
           </h1>
           <p className="text-ide-text text-[16px] font-semibold mb-1">{personalInfo.role}</p>
+          {personalInfo.founder && (
+            <div className="mb-1.5">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-ide-accent/10 border border-ide-accent/30 text-ide-accent text-[12px] font-semibold font-sans">
+                {personalInfo.founder}
+              </span>
+            </div>
+          )}
           <p className="text-ide-text-dim text-[13px] font-semibold">
             {personalInfo.degree} · {personalInfo.university} · {personalInfo.location}
           </p>
@@ -154,7 +126,7 @@ export function WelcomePage({ onOpenFile }) {
             </a>
 
             <a
-              href="https://codolio.com/profile/vatsalchandrani"
+              href={socialLinks.codolio}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors flex items-center gap-1"
