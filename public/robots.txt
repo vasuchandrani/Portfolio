@@ -1,0 +1,6 @@
+# Robots.txt for Vatsal Chandrani Portfolio (vatsal-chandrani.me)
+User-agent: *
+Allow: /
+
+# Direct search engine crawlers to the sitemap
+Sitemap: https://vatsal-chandrani.me/sitemap.xml
