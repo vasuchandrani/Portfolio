@@ -16,25 +16,29 @@ export function ExtensionsPanel({ onOpenDetail, activeId }) {
             title: "HOT FAVORITE",
             items: filtered.filter((e) => e.hotFavorite),
         },
-        project: {
-            title: "PROJECTS",
-            items: filtered.filter((e) => e.kind === "project" && !e.hotFavorite),
+        completedProjects: {
+            title: "COMPLETED PROJECTS",
+            items: filtered.filter((e) => e.section === "completed-projects"),
         },
-        chrome: {
-            title: "CHROME EXTENSIONS",
-            items: filtered.filter((e) => e.kind === "chrome"),
+        systemDesigns: {
+            title: "SYSTEM DESIGNS",
+            items: filtered.filter((e) => e.section === "system-designs" || e.section === "system-design"),
         },
-        idea: {
+        extensions: {
+            title: "EXTENSIONS",
+            items: filtered.filter((e) => e.section === "extentions" || e.section === "extensions"),
+        },
+        futureIdeas: {
             title: "FUTURE IDEAS",
-            items: filtered.filter((e) => e.kind === "idea"),
+            items: filtered.filter((e) => e.section === "future-ideas"),
         },
-        freelance: {
-            title: "FREELANCE PROJECTS",
-            items: filtered.filter((e) => e.kind === "freelance"),
+        freelancingProjects: {
+            title: "FREELANCING PROJECTS",
+            items: filtered.filter((e) => e.section === "freelancing-projects"),
         },
-        business: {
+        businessIdeas: {
             title: "BUSINESS IDEAS",
-            items: filtered.filter((e) => e.kind === "business"),
+            items: filtered.filter((e) => e.section === "business-ideas"),
         },
     };
 
@@ -79,34 +83,42 @@ function Section({ title, children }) {
 
 function ExtCard({ ext, active, onClick, }) {
 
-  const kindStyles = {
-        project: {
+  const sectionStyles = {
+        "completed-projects": {
             background: "linear-gradient(135deg, hsl(var(--ide-accent) / 0.25), hsl(var(--ide-accent) / 0.05))",
             color: "hsl(var(--ide-accent))",
         },
-
-        chrome: {
+        "system-designs": {
+            background: "linear-gradient(135deg, rgba(6,182,212,0.25), rgba(6,182,212,0.05))",
+            color: "#06b6d4",
+        },
+        "system-design": {
+            background: "linear-gradient(135deg, rgba(6,182,212,0.25), rgba(6,182,212,0.05))",
+            color: "#06b6d4",
+        },
+        extentions: {
             background: "linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.05))",
             color: "#3b82f6",
         },
-
-        idea: {
+        extensions: {
+            background: "linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.05))",
+            color: "#3b82f6",
+        },
+        "future-ideas": {
             background: "linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05))",
             color: "#f59e0b",
         },
-
-        business: {
+        "business-ideas": {
             background: "linear-gradient(135deg, rgba(34,197,94,0.25), rgba(34,197,94,0.05))",
             color: "#22c55e",
         },
-
-        freelance: {
+        "freelancing-projects": {
             background: "linear-gradient(135deg, rgba(168,85,247,0.25), rgba(168,85,247,0.05))",
             color: "#a855f7",
         },
     };
 
-    const style = kindStyles[ext.kind] || kindStyles.project;
+    const style = sectionStyles[ext.section] || sectionStyles["completed-projects"];
 
     return (
     <button onClick={onClick} className={`w-full text-left px-3 py-2.5 flex gap-3 border-b border-ide-border/50 transition-colors ${active ? "bg-ide-hover" : "hover:bg-ide-hover"}`}>
@@ -139,40 +151,57 @@ export function ExtensionDetail({ id }) {
     if (!ext) {
         return (<div className="p-8 text-ide-text-dim font-sans">Extension not found.</div>);
     }
-    const kindStyles = {
-      project: {
+    const sectionStyles = {
+      "completed-projects": {
         badge: "bg-ide-accent/15 text-ide-accent",
         iconBg:
           "linear-gradient(135deg, hsl(var(--ide-accent) / 0.3), hsl(var(--ide-accent) / 0.05))",
         iconColor: "hsl(var(--ide-accent))",
         label: "Project",
       },
-
-      chrome: {
+      "system-designs": {
+        badge: "bg-cyan-500/15 text-cyan-400",
+        iconBg:
+          "linear-gradient(135deg, rgba(6,182,212,0.3), rgba(6,182,212,0.05))",
+        iconColor: "#06b6d4",
+        label: "System Design",
+      },
+      "system-design": {
+        badge: "bg-cyan-500/15 text-cyan-400",
+        iconBg:
+          "linear-gradient(135deg, rgba(6,182,212,0.3), rgba(6,182,212,0.05))",
+        iconColor: "#06b6d4",
+        label: "System Design",
+      },
+      extentions: {
           badge: "bg-blue-500/15 text-blue-500",
           iconBg:
               "linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.05))",
           iconColor: "#3b82f6",
           label: "Chrome Extension",
       },
-
-      idea: {
+      extensions: {
+          badge: "bg-blue-500/15 text-blue-500",
+          iconBg:
+              "linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.05))",
+          iconColor: "#3b82f6",
+          label: "Chrome Extension",
+      },
+      "future-ideas": {
         badge: "bg-amber-500/15 text-amber-500",
         iconBg:
           "linear-gradient(135deg, rgba(245,158,11,0.3), rgba(245,158,11,0.05))",
         iconColor: "#f59e0b",
         label: "Future Idea",
       },
-
-      business: {
+      "business-ideas": {
         badge: "bg-green-500/15 text-green-500",
         iconBg:
           "linear-gradient(135deg, rgba(34,197,94,0.3), rgba(34,197,94,0.05))",
         iconColor: "#22c55e",
         label: "Business Idea",
       },
-
-      freelance: {
+      "freelancing-projects": {
         badge: "bg-purple-500/15 text-purple-500",
         iconBg:
           "linear-gradient(135deg, rgba(168,85,247,0.3), rgba(168,85,247,0.05))",
@@ -181,7 +210,7 @@ export function ExtensionDetail({ id }) {
       },
     };
 
-    const style = kindStyles[ext.kind] || kindStyles.project;
+    const style = sectionStyles[ext.section] || sectionStyles["completed-projects"];
     return (<div className="h-full w-full overflow-auto bg-ide-bg text-ide-text font-sans">
       <div className="border-b border-ide-border bg-ide-surface px-4 sm:px-8 py-4 sm:py-6">
         <div className="flex flex-col sm:flex-row items-start gap-3.5 sm:gap-5">
@@ -222,9 +251,9 @@ export function ExtensionDetail({ id }) {
                   📂 Repository
                 </a>)}
               {ext.demo && (<a href={ext.demo} target="_blank" rel="noopener noreferrer" className="px-3.5 sm:px-4 py-1.5 rounded border border-ide-border text-ide-text text-[12px] font-medium hover:bg-ide-hover transition-colors">
-                  ▶ {ext.kind === "project" ? "View Deployment" : "View Prototype"}
+                  ▶ {ext.section === "completed-projects" ? "View Deployment" : "View Prototype"}
                 </a>)}
-              {(ext.kind === "idea" || ext.kind === "business" || ext.kind === "freelance") &&
+              {(ext.section === "future-ideas" || ext.section === "business-ideas" || ext.section === "freelancing-projects" || ext.section === "system-designs") &&
                 !ext.repo &&
                 !ext.demo && (
                   <span className="px-3.5 sm:px-4 py-1.5 rounded border border-dashed border-amber-500/60 text-amber-400 text-[12px] font-bold">

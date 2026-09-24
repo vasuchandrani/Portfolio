@@ -46,6 +46,29 @@ function OnboardingTour({ onClose }) {
     const [step, setStep] = useState(0);
     const isLast = step === tourSteps.length - 1;
     const s = tourSteps[step];
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "ArrowRight") {
+                e.preventDefault();
+                if (isLast) {
+                    onClose();
+                } else {
+                    setStep((n) => Math.min(n + 1, tourSteps.length - 1));
+                }
+            } else if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                setStep((n) => Math.max(0, n - 1));
+            } else if (e.key === "Escape") {
+                e.preventDefault();
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isLast, onClose]);
+
     return (<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] font-sans p-3">
       <div className="w-full max-w-md rounded-xl border border-ide-border bg-ide-surface shadow-2xl shadow-black/40 overflow-hidden">
         <div className="px-5 pt-5 pb-2 flex items-center gap-2">
@@ -78,17 +101,31 @@ function OnboardingTour({ onClose }) {
             Skip tour
           </button>
           <div className="flex gap-2">
-            {step > 0 && (<button onClick={() => setStep((n) => n - 1)} className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-semibold hover:bg-ide-hover transition-colors">
-                Back
-              </button>)}
-            <button onClick={() => (isLast ? onClose() : setStep((n) => n + 1))} className="px-4 py-1.5 rounded-md bg-ide-accent text-white text-[12px] font-bold hover:opacity-90 transition-opacity">
-              {isLast ? "Got it" : "Next →"}
+            {step > 0 && (
+              <button
+                onClick={() => setStep((n) => n - 1)}
+                className="px-3 py-1.5 rounded-md border border-ide-border text-ide-text text-[12px] font-semibold hover:bg-ide-hover transition-colors flex items-center gap-1.5"
+                title="Previous step (Left Arrow)"
+              >
+                <span>Back</span>
+                <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-ide-bg border border-ide-border text-ide-text-dim leading-none">←</kbd>
+              </button>
+            )}
+            <button
+              onClick={() => (isLast ? onClose() : setStep((n) => n + 1))}
+              className="px-3.5 py-1.5 rounded-md bg-ide-accent text-white text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-1.5"
+              title={isLast ? "Finish tour (Right Arrow)" : "Next step (Right Arrow)"}
+            >
+              <span>{isLast ? "Got it" : "Next"}</span>
+              <kbd className="text-[10px] font-mono px-1 py-0.5 rounded bg-white/20 border border-white/20 text-white leading-none">→</kbd>
             </button>
           </div>
         </div>
       </div>
     </div>);
 }
+
+let hasDismissedMobileNotice = false;
 
 export function WelcomePage({ onOpenFile }) {
     const [showMobileNotice, setShowMobileNotice] = useState(false);
@@ -98,8 +135,12 @@ export function WelcomePage({ onOpenFile }) {
         if (typeof window === "undefined")
             return;
         try {
+            localStorage.removeItem(MOBILE_NOTICE_KEY);
+        } catch {}
+
+        try {
             const isMobile = window.innerWidth < 768;
-            if (isMobile && !localStorage.getItem(MOBILE_NOTICE_KEY)) {
+            if (isMobile && !hasDismissedMobileNotice) {
                 setShowMobileNotice(true);
             } else if (!localStorage.getItem(TOUR_KEY)) {
                 setShowTour(true);
@@ -111,10 +152,8 @@ export function WelcomePage({ onOpenFile }) {
     }, []);
 
     const handleContinueMobile = () => {
+        hasDismissedMobileNotice = true;
         setShowMobileNotice(false);
-        try {
-            localStorage.setItem(MOBILE_NOTICE_KEY, "1");
-        } catch {}
         try {
             if (!localStorage.getItem(TOUR_KEY)) {
                 setShowTour(true);
